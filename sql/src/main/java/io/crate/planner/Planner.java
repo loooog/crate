@@ -34,6 +34,7 @@ import io.crate.analyze.CreateAnalyzerAnalyzedStatement;
 import io.crate.analyze.CreateTableAnalyzedStatement;
 import io.crate.analyze.DCLStatement;
 import io.crate.analyze.DDLStatement;
+import io.crate.analyze.DeallocateAnalyzedStatement;
 import io.crate.analyze.DropBlobTableAnalyzedStatement;
 import io.crate.analyze.DropTableAnalyzedStatement;
 import io.crate.analyze.ExplainAnalyzedStatement;
@@ -276,6 +277,13 @@ public class Planner extends AnalyzedStatementVisitor<PlannerContext, Plan> {
     public Plan visitKillAnalyzedStatement(KillAnalyzedStatement analysis, PlannerContext context) {
         return analysis.jobId().isPresent() ?
             new KillPlan(analysis.jobId().get()) :
+            new KillPlan();
+    }
+
+    @Override
+    public Plan visitDeallocateAnalyzedStatement(DeallocateAnalyzedStatement analysis, PlannerContext context) {
+        return analysis.preparedStmtName().isPresent() ?
+            new KillPlan(analysis.preparedStmtName().get()) :
             new KillPlan();
     }
 

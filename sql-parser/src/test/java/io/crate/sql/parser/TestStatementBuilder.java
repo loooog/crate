@@ -198,6 +198,27 @@ public class TestStatementBuilder {
     }
 
     @Test
+    public void testDeallocateStmtBuilder() {
+        printStatement("deallocate all");
+        printStatement("deallocate prepare all");
+        printStatement("deallocate 'myStmt'");
+        printStatement("deallocate ?");
+        printStatement("deallocate $1");
+    }
+
+    @Test
+    public void testDeallocate() {
+        DeallocateStatement stmt = (DeallocateStatement) SqlParser.createStatement("DEALLOCATE $1");
+        assertThat(stmt.preparedStmt().isPresent(), is(true));
+    }
+
+    @Test
+    public void testDeallocateAll() {
+        Statement stmt = SqlParser.createStatement("DEALLOCATE ALL");
+        assertTrue(stmt.equals(new DeallocateStatement()));
+    }
+
+    @Test
     public void testRefreshStmtBuilder() {
         printStatement("refresh table t");
         printStatement("refresh table t partition (pcol='val'), tableh partition (pcol='val')");
